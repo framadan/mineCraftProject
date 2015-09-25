@@ -24,11 +24,7 @@ public class Player : MonoBehaviour
 	void Update () 
 	{
 		Movement ();
-		if (Physics.Raycast (transform.position, Vector3.forward, distance)) 
-		{
-			canPlaceBlocks = true;
-			PlaceBlocks ();
-		}
+		PlaceBlocks ();
 	}
 
 	void Movement ()
@@ -57,7 +53,14 @@ public class Player : MonoBehaviour
 
 	void PlaceBlocks ()
 	{
-
+		if (Physics.Raycast (transform.position, Vector3.forward, distance)) 
+		{
+			canPlaceBlocks = true;
+		}
+		if (Physics.Raycast (transform.position, Vector3.forward, distance) != true) 
+		{
+			canPlaceBlocks = false;
+		}
 		if (Input.GetKeyDown (KeyCode.Mouse1) && canPlaceBlocks == true) 
 		{
 			Instantiate(testCube,transform.position,transform.rotation);
