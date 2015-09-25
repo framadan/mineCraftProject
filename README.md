@@ -5,10 +5,18 @@ Tags: (All tags are lower case)
 
 player tag = "player"
 
-wood blocks = "wood"
+wood blocks = "woodblock"
+wood world = "woodworld"
+wood inventory = "woodinventory"
 
-grass blocks = "grass"
+grass blocks = "grassblock"
+grass world = "grassworld"
+grass inventory = "grassinventory"
 
-stone blocks = "stone"
+stone blocks = "stoneblock"
+stone world = "stoneworld"
+stone inventory = "stoneinventory"
 
-dirt blocks = "dirt"
+dirt blocks = "dirtblock"
+dirt world = "dirtworld"
+dirt inventory = "dirtinventory"
