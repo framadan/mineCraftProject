@@ -5,7 +5,7 @@ public class Player : MonoBehaviour
 {
 	public GameObject inventoryPanel = null;
 	public bool inventoryActive = false;
-	public float distance = 10.0f;
+
 
 	// Use this for initialization
 	void Start () 
@@ -24,9 +24,5 @@ public class Player : MonoBehaviour
 
 		
 	}
-	void OnMouseDrag()
-	{
-		Vector3 mousePosition = new Vector3 (Input.mousePosition.x, Input.mousePosition.y, distance);
-		Vector3 objPosition = Camera.main.ScreenToWorldPoint (mousePosition);
-	}
+
 }
