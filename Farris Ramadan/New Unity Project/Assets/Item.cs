@@ -1,28 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Player : MonoBehaviour 
-{
-	public GameObject inventoryPanel = null;
-	public bool inventoryActive = false;
+public class Item : MonoBehaviour {
 	public float distance = 10.0f;
 
 	// Use this for initialization
-	void Start () 
-	{
-
+	void Start () {
+	
 	}
 	
 	// Update is called once per frame
-	void Update () 
-	{
-			if (Input.GetKeyDown (KeyCode.E)) 
-		{
-			inventoryPanel.SetActive(inventoryActive);
-			inventoryActive = !inventoryActive;
-		}
-
-		
+	void Update () {
+	
 	}
 	void OnMouseDrag()
 	{

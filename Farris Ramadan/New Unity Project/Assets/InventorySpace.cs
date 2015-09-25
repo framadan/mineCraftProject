@@ -6,7 +6,6 @@ public class InventorySpace : MonoBehaviour
 	public GameObject[] spaces;
 	public int sCount = 0;
 
-	// Use this for initialization
 	void Start () 
 	{
 
@@ -22,4 +21,10 @@ public class InventorySpace : MonoBehaviour
 
 		}
 	}
+
+	
+	
+
+	
+
 }
