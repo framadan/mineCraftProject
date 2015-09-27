@@ -20,9 +20,9 @@ public class PlayerMovement : MonoBehaviour
 	public int attack = 1;
 
 	public float distance = 8.1f;
-	
-	public bool canPlaceBlocks = false;
 
+	public GameObject block = null;
+	
 	// Use this for initialization
 	void Start () 
 	{
@@ -93,17 +93,15 @@ public class PlayerMovement : MonoBehaviour
 
 	void PlaceBlocks ()
 	{
-		if (Physics.Raycast (transform.position, Vector3.forward, distance)) 
+		if (Input.GetKeyDown (KeyCode.Mouse1)) 
 		{
-			canPlaceBlocks = true;
-		}
-		if (Physics.Raycast (transform.position, Vector3.forward, distance) != true) 
-		{
-			canPlaceBlocks = false;
-		}
-		if (Input.GetKeyDown (KeyCode.Mouse1) && canPlaceBlocks == true) 
-		{
+			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hitInfo;
 
+			if (Physics.Raycast (rayOrigin, out hitInfo, 8.0f))
+			{
+				Instantiate (block, hitInfo.point + Vector3.up * .5f, hitInfo.collider.transform.rotation);
+			}
 		}
 	}
 
