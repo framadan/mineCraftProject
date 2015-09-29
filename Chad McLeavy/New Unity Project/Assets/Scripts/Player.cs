@@ -34,36 +34,7 @@ public class Player : MonoBehaviour
 	{
 		PlaceBlocks ();
 		BreakBlocks ();
-
-		CharacterController cc = GetComponent<CharacterController>();
-
-		//Rotation
-
-		float leftRightRotation = Input.GetAxis("Mouse X") * mouseSensitivity;
-		transform.Rotate (0, leftRightRotation, 0);
-
-		verticalRotation -= Input.GetAxis("Mouse Y") * mouseSensitivity;
-		verticalRotation = Mathf.Clamp(verticalRotation, -upDownRotationLimit, upDownRotationLimit);
-		Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
-
-
-		//Movement
-	
-		float fowardSpeed = Input.GetAxis("Vertical") * movementSpeed;
-		float sideSpeed = Input.GetAxis("Horizontal") * movementSpeed;
-
-		verticalVelocity += Physics.gravity.y * Time.deltaTime;
-
-		if(cc.isGrounded && Input.GetButtonDown("Jump"))
-		{
-			verticalVelocity = jumpVelocity;
-		}
-
-		Vector3 speed = new Vector3(sideSpeed, verticalVelocity, fowardSpeed);
-
-		speed = transform.rotation * speed;
-
-		cc.Move(speed * Time.deltaTime);
+		PlayerMovement ();
 
 		//Player Idol
 		//Note: Code Works Just Messy
@@ -92,16 +63,51 @@ public class Player : MonoBehaviour
 		
 	}
 
+	void PlayerMovement ()
+	{
+		CharacterController cc = GetComponent<CharacterController>();
+		
+		//Rotation
+		
+		float leftRightRotation = Input.GetAxis("Mouse X") * mouseSensitivity;
+		transform.Rotate (0, leftRightRotation, 0);
+		
+		verticalRotation -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+		verticalRotation = Mathf.Clamp(verticalRotation, -upDownRotationLimit, upDownRotationLimit);
+		Camera.main.transform.localRotation = Quaternion.Euler(verticalRotation, 0, 0);
+		
+		
+		//Movement
+		
+		float fowardSpeed = Input.GetAxis("Vertical") * movementSpeed;
+		float sideSpeed = Input.GetAxis("Horizontal") * movementSpeed;
+		
+		verticalVelocity += Physics.gravity.y * Time.deltaTime;
+		
+		if(cc.isGrounded && Input.GetButtonDown("Jump"))
+		{
+			verticalVelocity = jumpVelocity;
+		}
+		
+		Vector3 speed = new Vector3(sideSpeed, verticalVelocity, fowardSpeed);
+		
+		speed = transform.rotation * speed;
+		
+		cc.Move(speed * Time.deltaTime);
+
+	}
+
 	void PlaceBlocks ()
 	{
 		if (Input.GetKeyDown (KeyCode.Mouse1)) 
 		{
 			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
-
+				
 			if (Physics.Raycast (rayOrigin, out hitInfo, 8.0f))
 			{
-				Instantiate (block, hitInfo.point + Vector3.up * .5f, hitInfo.collider.transform.rotation);
+				hitInfo.collider.gameObject.transform.Translate (Vector3.up * 0.9f);
+				Instantiate (block, hitInfo.collider.transform.position, Quaternion.identity);
 			}
 		}
 	}
@@ -115,7 +121,6 @@ public class Player : MonoBehaviour
 			
 			if (Physics.Raycast (rayOrigin, out hitInfo, 8.0f))
 			{
-				Debug.Log ("Success");
 				hitInfo.collider.gameObject.GetComponent<Block>().breakTimer -= Time.deltaTime;
 			}
 		}
@@ -126,50 +131,50 @@ public class Player : MonoBehaviour
 			
 			if (Physics.Raycast (rayOrigin, out hitInfo, 8.0f))
 			{
-				Debug.Log ("Success");
 				hitInfo.collider.gameObject.GetComponent<Block>().breakTimer = 
 				hitInfo.collider.gameObject.GetComponent<Block>().breakTimerReset;
 			}
 		}
 	}
 
-	void HotbarSwitch ()
-	{
-		if (Input.GetKeyDown (KeyCode.Keypad1)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad2)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad3)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad4)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad5)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad6)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad7)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad8)) 
-		{
-			
-		}
-		if (Input.GetKeyDown (KeyCode.Keypad9)) 
-		{
-			
-		}
-	}
+//For when the hotbar is ready
+//	void HotbarSwitch ()
+//	{
+//		if (Input.GetKeyDown (KeyCode.Keypad1)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad2)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad3)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad4)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad5)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad6)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad7)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad8)) 
+//		{
+//			
+//		}
+//		if (Input.GetKeyDown (KeyCode.Keypad9)) 
+//		{
+//			
+//		}
+//	}
 }

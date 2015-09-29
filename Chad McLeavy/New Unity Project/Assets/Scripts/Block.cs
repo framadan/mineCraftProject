@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Block : MonoBehaviour 
 {
+	public GameObject block = null;
 	public float breakTimerReset = 3.0f;
 	public float breakTimer = 3.0f;
 
@@ -22,7 +23,7 @@ public class Block : MonoBehaviour
 	{
 		if (breakTimer <= 0.0f) 
 		{
-			Destroy (gameObject,0.0f);
+			Destroy (block,0.0f);
 		}
 	}
 }
