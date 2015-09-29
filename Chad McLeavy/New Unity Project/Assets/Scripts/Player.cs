@@ -17,16 +17,18 @@ public class Player : MonoBehaviour
 	//public float timeSpentIdol2 = 0.0f;
 
 	public int health = 20;
-	public int attack = 1;
+	public int attack = 2;
 
-	public float distance = 8.1f;
+	public float distance = 8.0f;
+
+	public bool cursorLocked = true;
 
 	public GameObject block = null;
 	
 	// Use this for initialization
 	void Start () 
 	{
-
+		cursorLocked = true;
 	}
 	
 	// Update is called once per frame
@@ -35,6 +37,8 @@ public class Player : MonoBehaviour
 		PlaceBlocks ();
 		BreakBlocks ();
 		PlayerMovement ();
+		Attack ();
+		LockCursor ();
 
 		//Player Idol
 		//Note: Code Works Just Messy
@@ -104,10 +108,11 @@ public class Player : MonoBehaviour
 			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
 				
-			if (Physics.Raycast (rayOrigin, out hitInfo, 8.0f))
+			if (Physics.Raycast (rayOrigin, out hitInfo, distance))
 			{
 				hitInfo.collider.gameObject.transform.Translate (Vector3.up * 0.9f);
 				Instantiate (block, hitInfo.collider.transform.position, Quaternion.identity);
+				hitInfo.collider.gameObject.transform.Translate (Vector3.down * 0.9f);
 			}
 		}
 	}
@@ -118,22 +123,85 @@ public class Player : MonoBehaviour
 		{
 			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
-			
-			if (Physics.Raycast (rayOrigin, out hitInfo, 8.0f))
+
+			if (Physics.Raycast (rayOrigin, out hitInfo, distance))
 			{
-				hitInfo.collider.gameObject.GetComponent<Block>().breakTimer -= Time.deltaTime;
+				if (hitInfo.collider.gameObject.tag == "Block")
+				{
+					hitInfo.collider.gameObject.GetComponent<Block>().breakTimer -= Time.deltaTime;
+				}
 			}
+
 		}
 		if (Input.GetKeyUp (KeyCode.Mouse0)) 
 		{
 			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
 			
-			if (Physics.Raycast (rayOrigin, out hitInfo, 8.0f))
+			if (Physics.Raycast (rayOrigin, out hitInfo, distance))
 			{
-				hitInfo.collider.gameObject.GetComponent<Block>().breakTimer = 
-				hitInfo.collider.gameObject.GetComponent<Block>().breakTimerReset;
+				if (hitInfo.collider.gameObject.tag == "Block")
+				{
+					hitInfo.collider.gameObject.GetComponent<Block>().breakTimer = 
+					hitInfo.collider.gameObject.GetComponent<Block>().breakTimerReset;
+				}
 			}
+		}
+	}
+
+	void Attack ()
+	{
+		if (Input.GetKeyDown (KeyCode.Mouse0)) 
+		{
+			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
+			RaycastHit hitInfo;
+			
+			if (Physics.Raycast (rayOrigin, out hitInfo, 2.0f)) 
+			{
+				if (hitInfo.collider.gameObject.tag == "Enemy")
+				{
+					hitInfo.collider.gameObject.GetComponent<Enemy>().health -= attack;
+				}
+			}
+		}
+	}
+
+	void LockCursor () 
+	{
+		if (cursorLocked == true && Input.GetKeyDown (KeyCode.Escape)) 
+		{
+			cursorLocked = false;
+			print ("cursor unlocked");
+		} 
+		else if (cursorLocked == false && Input.GetKeyDown (KeyCode.Escape)) 
+		{
+			cursorLocked = true;
+			print ("cursor locked");
+		}
+		if (cursorLocked == true) 
+		{
+			Cursor.lockState = CursorLockMode.Locked;
+		}
+		else if (cursorLocked == false) 
+		{
+			Cursor.lockState = CursorLockMode.None;
+		}
+	}
+
+	void TakeDamage () 
+	{
+		health -= 3;
+		if(gameObject.GetComponent<CharacterController>().isGrounded)
+		{
+			verticalVelocity = jumpVelocity;
+		}
+	}
+
+	void OnTriggerEnter (Collider other)
+	{
+		if (other.gameObject.tag == "Enemy")
+		{
+			TakeDamage ();
 		}
 	}
 
