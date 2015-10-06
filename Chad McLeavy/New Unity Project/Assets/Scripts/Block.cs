@@ -3,9 +3,10 @@ using System.Collections;
 
 public class Block : MonoBehaviour 
 {
-	public GameObject block = null;
 	public float breakTimerReset = 3.0f;
 	public float breakTimer = 3.0f;
+
+	public GameObject blockDrop = null;
 
 	// Use this for initialization
 	void Start () 
@@ -23,7 +24,8 @@ public class Block : MonoBehaviour
 	{
 		if (breakTimer <= 0.0f) 
 		{
-			Destroy (block,0.0f);
+			Instantiate (blockDrop,transform.position,transform.rotation);
+			Destroy (gameObject,0.0f);
 		}
 	}
 }

@@ -6,26 +6,28 @@ public class Player : MonoBehaviour
 	public float movementSpeed = 0.0f;
 	public float mouseSensitivity = 0.0f;
 	public float jumpVelocity = 0.0f;
-	public GameObject normalArm = null;
-	public GameObject armPunch = null;
-	float verticalRotation = 0.0f;
+	public float verticalRotation = 0.0f;
 	public float upDownRotationLimit = 0.0f;
-
-	float verticalVelocity = 0.0f;
+	public float verticalVelocity = 0.0f;
+	public float distance = 8.0f;
+	public float mobSoundRadius = 5.0f;
 
 	//PlayerIdol
 	//public float timeSpentIdol1 = 0.0f;
 	//public float timeSpentIdol2 = 0.0f;
 
-	public int health = 20;
 	public int attack = 2;
-
-	public float distance = 8.0f;
+	public int knockBack = 500;
 
 	public bool cursorLocked = true;
 
 	public GameObject block = null;
+	public GameObject normalArm = null;
+	public GameObject armPunch = null;
 	
+	public Collider[] mobs;
+
+	public AudioSource punch = null;
 
 	// Use this for initialization
 	void Start () 
@@ -172,7 +174,10 @@ public class Player : MonoBehaviour
 
 				if (hitInfo.collider.gameObject.tag == "Mob")
 				{
-					hitInfo.collider.gameObject.GetComponent<Mob>().health -= attack;
+					punch.Play ();
+					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.forward * knockBack);
+					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.up * knockBack);
+					hitInfo.collider.gameObject.GetComponent<DeathCode>().health -= attack;
 				}
 			}
 		}
@@ -204,12 +209,12 @@ public class Player : MonoBehaviour
 			Cursor.lockState = CursorLockMode.None;
 		}
 	}
-
+	
 	void OnTriggerEnter (Collider other)
 	{
 		if (other.gameObject.tag == "Mob Drop") 
 		{
-			Destroy (other.gameObject,0);
+			Destroy (other.gameObject,0.0f);
 		}
 	}
 
