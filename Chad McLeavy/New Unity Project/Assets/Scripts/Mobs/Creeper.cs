@@ -59,7 +59,6 @@ public class Creeper : MonoBehaviour
 		{
 			if (hitInfo.collider.gameObject.tag == "Block" && canJump == true)
 			{
-				print ("hit");
 				canJump = false;
 				GetComponent<Rigidbody>().AddForce (transform.up * jumpHeight);
 			}
