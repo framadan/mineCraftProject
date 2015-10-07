@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 
 public class PerlinNoiseTest : MonoBehaviour
 {
 	public GameObject dirtBlock = null;
+	public GameObject stoneBlock = null;
 
 	public int size = 50;
 	public float scale = 7.0f;
@@ -14,17 +17,23 @@ public class PerlinNoiseTest : MonoBehaviour
 	public bool enableHeight = true;
 	public bool move = false;
 
+	public List<GameObject> squares = new List<GameObject> ();
+
 	void Start()
 	{
 		for(var x = 0; x < size; x++)
 		{
 			for(var z = 0; z < size; z++)
 			{
-				var c = Instantiate(dirtBlock, new Vector3(x,0,z), Quaternion.identity) as GameObject;
+				var c = Instantiate(dirtBlock, new Vector3(x,-1,z), Quaternion.identity) as GameObject;
+				squares.Add(c);
 					
 				c.transform.parent = transform;
 			}
 		}
+
+		scaleModifier = Random.Range(5,7);
+		scale = Random.Range(3,5);
 	}
 
 	void Update ()
@@ -40,16 +49,6 @@ public class PerlinNoiseTest : MonoBehaviour
 
 			setMatColor(child, height);
 
-			if(enableHeight == true)
-				applyHeight(child, height);
-		}
-
-		foreach(Transform child in transform)
-		{
-			var height = Mathf.PerlinNoise(child.transform.position.x/scale, child.transform.position.z/scale);
-			
-			setMatColor(child, height);
-			
 			if(enableHeight == true)
 				applyHeight(child, height);
 		}
