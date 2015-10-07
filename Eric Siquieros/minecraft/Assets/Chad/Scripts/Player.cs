@@ -6,28 +6,34 @@ public class Player : MonoBehaviour
 	public float movementSpeed = 0.0f;
 	public float mouseSensitivity = 0.0f;
 	public float jumpVelocity = 0.0f;
-
-	float verticalRotation = 0.0f;
+	public float verticalRotation = 0.0f;
 	public float upDownRotationLimit = 0.0f;
-
-	float verticalVelocity = 0.0f;
+	public float verticalVelocity = 0.0f;
+	public float distance = 8.0f;
+	public float mobSoundRadius = 5.0f;
 
 	//PlayerIdol
 	//public float timeSpentIdol1 = 0.0f;
 	//public float timeSpentIdol2 = 0.0f;
 
-	public int health = 20;
 	public int attack = 2;
-
-	public float distance = 8.0f;
+	public int knockBack = 500;
 
 	public bool cursorLocked = true;
 
 	public GameObject block = null;
+	public GameObject normalArm = null;
+	public GameObject armPunch = null;
 	
+	public Collider[] mobs;
+
+	public AudioSource punch = null;
+
 	// Use this for initialization
 	void Start () 
 	{
+		normalArm.SetActive (true);
+		armPunch.SetActive (false);
 		cursorLocked = true;
 	}
 	
@@ -105,15 +111,20 @@ public class Player : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Mouse1)) 
 		{
+			normalArm.SetActive(false);
+			armPunch.SetActive(true);
 			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
 				
 			if (Physics.Raycast (rayOrigin, out hitInfo, distance))
 			{
-				hitInfo.collider.gameObject.transform.Translate (Vector3.up * 0.9f);
-				Instantiate (block, hitInfo.collider.transform.position, Quaternion.identity);
-				hitInfo.collider.gameObject.transform.Translate (Vector3.down * 0.9f);
+				Instantiate (block, hitInfo.collider.transform.position + hitInfo.normal , Quaternion.identity);
 			}
+		}
+		if (Input.GetKeyUp (KeyCode.Mouse1)) 
+		{
+			normalArm.SetActive(true);
+			armPunch.SetActive(false);
 		}
 	}
 
@@ -153,16 +164,27 @@ public class Player : MonoBehaviour
 	{
 		if (Input.GetKeyDown (KeyCode.Mouse0)) 
 		{
+			normalArm.SetActive(false);
+			armPunch.SetActive(true);
 			Ray rayOrigin = Camera.main.ScreenPointToRay (Input.mousePosition);
 			RaycastHit hitInfo;
 			
-			if (Physics.Raycast (rayOrigin, out hitInfo, 2.0f)) 
+			if (Physics.Raycast (rayOrigin, out hitInfo, 4.0f)) 
 			{
-				if (hitInfo.collider.gameObject.tag == "Enemy")
+
+				if (hitInfo.collider.gameObject.tag == "Mob")
 				{
-					//hitInfo.collider.gameObject.GetComponent<Enemy>().health -= attack;
+					punch.Play ();
+					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.forward * knockBack);
+					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.up * knockBack);
+					//hitInfo.collider.gameObject.GetComponent<DeathCode>().health -= attack;
 				}
 			}
+		}
+		if (Input.GetKeyUp (KeyCode.Mouse0)) 
+		{
+			normalArm.SetActive(true);
+			armPunch.SetActive(false);
 		}
 	}
 
@@ -187,60 +209,51 @@ public class Player : MonoBehaviour
 			Cursor.lockState = CursorLockMode.None;
 		}
 	}
-
-	void TakeDamage () 
-	{
-		health -= 3;
-		if(gameObject.GetComponent<CharacterController>().isGrounded)
-		{
-			verticalVelocity = jumpVelocity;
-		}
-	}
-
+	
 	void OnTriggerEnter (Collider other)
 	{
-		if (other.gameObject.tag == "Enemy")
+		if (other.gameObject.tag == "Mob Drop") 
 		{
-			TakeDamage ();
+			Destroy (other.gameObject,0.0f);
 		}
 	}
 
 //For when the hotbar is ready
 //	void HotbarSwitch ()
 //	{
-//		if (Input.GetKeyDown (KeyCode.Keypad1)) 
+//		if (Input.GetKeyDown (KeyCode.1)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad2)) 
+//		if (Input.GetKeyDown (KeyCode.2)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad3)) 
+//		if (Input.GetKeyDown (KeyCode.3)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad4)) 
+//		if (Input.GetKeyDown (KeyCode.4)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad5)) 
+//		if (Input.GetKeyDown (KeyCode.5)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad6)) 
+//		if (Input.GetKeyDown (KeyCode.6)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad7)) 
+//		if (Input.GetKeyDown (KeyCode.7)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad8)) 
+//		if (Input.GetKeyDown (KeyCode.8)) 
 //		{
 //			
 //		}
-//		if (Input.GetKeyDown (KeyCode.Keypad9)) 
+//		if (Input.GetKeyDown (KeyCode.9)) 
 //		{
 //			
 //		}
