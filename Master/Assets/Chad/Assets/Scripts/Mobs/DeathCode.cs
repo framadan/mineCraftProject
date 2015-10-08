@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class DeathCode : MonoBehaviour 
 {
+	public int armor = 0;
 	public int health = 20;
 	public GameObject[] mobDrop = null;
 
@@ -20,10 +21,13 @@ public class DeathCode : MonoBehaviour
 
 	void Die ()
 	{
-		if (health <= 0.0f)
-		{
-			Instantiate (mobDrop[Random.Range (0,2)],gameObject.transform.position,gameObject.transform.rotation);
-			Destroy (gameObject,0.0f);
-		}
+
+
+			if (health <= 0.0f) 
+			{
+				Instantiate (mobDrop [Random.Range (0, 2)], gameObject.transform.position, gameObject.transform.rotation);
+				Destroy (gameObject, 0.0f);
+			}
+
 	}
 }

@@ -1,8 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Player : MonoBehaviour 
 {
+	//vince update kraft===========================
+    public GameObject kraftObj = null;
+	public bool kraftActive = false;
+	//end vince kraft==============================
+	//
 	public float movementSpeed = 0.0f;
 	public float mouseSensitivity = 0.0f;
 	public float jumpVelocity = 0.0f;
@@ -50,6 +55,13 @@ public class Player : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		//vince kraft===================================
+		if (Input.GetKeyDown (KeyCode.K)) 
+		{
+			kraftActivity();
+		}
+
+		//vincekraft==================================
 		PlayerMovement ();
 		PlaceBlocks ();
 		BreakBlocks ();
@@ -83,7 +95,11 @@ public class Player : MonoBehaviour
 		//}
 		
 	}
-
+	public void kraftActivity ()
+	{
+		kraftObj.SetActive(kraftActive);
+		kraftActive = !kraftActive;
+	}
 	void PlayerMovement ()
 	{
 		CharacterController cc = GetComponent<CharacterController>();
