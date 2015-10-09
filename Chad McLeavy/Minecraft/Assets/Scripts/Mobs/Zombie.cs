@@ -6,6 +6,7 @@ public class Zombie : MonoBehaviour
 	public float aggroRadius = 5f;
 	public float speed = 1.0f;
 	public float jumpHeight = 50;
+	public float zombieSoundTimer = 10f;
 
 	public bool canJump = true;
 
@@ -16,6 +17,7 @@ public class Zombie : MonoBehaviour
 	public GameObject[] mobDrop = null;
 
 	public AudioSource hitSound = null;
+	public AudioSource zombieSound = null;
 
 	// Use this for initialization
 	void Start () 
@@ -26,6 +28,12 @@ public class Zombie : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		zombieSoundTimer -= Time.deltaTime;
+		if (zombieSoundTimer <= 0) 
+		{
+			zombieSound.Play ();
+			zombieSoundTimer = Random.Range (7f,15f);
+		}
 		FindPlayer ();
 		DetectBlock ();
 	}

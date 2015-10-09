@@ -49,13 +49,16 @@ public class Hotbar : MonoBehaviour
 
 	public void UpdateItems ()
 	{
-		slots [8 - i].GetComponent<HotbarSlots>().blockType = player.GetComponent<Player> ().newBlockType;
-		slots [8 - i].sprite = player.GetComponent<Player> ().newSprite;
-		slots [8 - i].color = new Color (1, 1, 1, 1);
-		i += 1;
-		if (i == 9) 
+		if (slots [8 - i].sprite == null)
 		{
-			i = 0;
+			slots [8 - i].GetComponent<HotbarSlots>().blockType = player.GetComponent<Player> ().newBlockType;
+			slots [8 - i].sprite = player.GetComponent<Player> ().newSprite;
+			slots [8 - i].color = new Color (1, 1, 1, 1);
+			i += 1;
+			if (i == 9) 
+			{
+				i = 0;
+			}
 		}
 	}
 }

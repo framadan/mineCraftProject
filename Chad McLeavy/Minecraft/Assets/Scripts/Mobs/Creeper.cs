@@ -15,6 +15,8 @@ public class Creeper : MonoBehaviour
 	public Collider[] explosionTarget;
 	public Collider[] objectsAroundCreeper;
 
+	public AudioSource creeper;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -82,6 +84,7 @@ public class Creeper : MonoBehaviour
 
 		if (explosionTarget.Length > 0)
 		{
+			creeper.Play ();
 			explosionTimer -= Time.deltaTime;
 			if (explosionTimer <= 0)
 			{

@@ -35,6 +35,12 @@ public class Player : MonoBehaviour
 
 	public AudioSource punch;
 	public AudioSource placeBlock;
+	public AudioSource zombie;
+	public AudioSource skeleton;
+	public AudioSource creeper;
+	public AudioSource cow;
+	public AudioSource sheep;
+	public AudioSource pig;
 
 	public Sprite newSprite;
 	public Sprite armHotbarSprite;
@@ -207,12 +213,43 @@ public class Player : MonoBehaviour
 			if (Physics.Raycast (rayOrigin, out hitInfo, 4.0f)) 
 			{
 
-				if (hitInfo.collider.gameObject.tag == "Mob")
+				if (hitInfo.collider.gameObject.layer == 11)
 				{
-					punch.Play ();
 					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.forward * knockBack);
 					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.up * knockBack);
 					hitInfo.collider.gameObject.GetComponent<DeathCode>().health -= attack;
+
+					//Adio on hit
+					if (hitInfo.collider.gameObject.tag == "Zombie")
+					{
+						punch.Play ();
+						zombie.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Skeleton")
+					{
+						punch.Play ();
+						skeleton.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Creeper")
+					{
+						punch.Play ();
+						creeper.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Cow")
+					{
+						punch.Play ();
+						cow.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Sheep")
+					{
+						punch.Play ();
+						sheep.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Pig")
+					{
+						punch.Play ();
+						pig.Play ();
+					}
 				}
 			}
 		}
