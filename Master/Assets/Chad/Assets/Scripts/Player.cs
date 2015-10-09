@@ -34,11 +34,18 @@ public class Player : MonoBehaviour
 	public GameObject armPunchHotbar;
 	public GameObject blockType;
 	public GameObject newBlockType;
+	public GameObject gameManager;
 	
 	public Collider[] mobs;
 
 	public AudioSource punch;
 	public AudioSource placeBlock;
+	public AudioSource zombie;
+	public AudioSource skeleton;
+	public AudioSource creeper;
+	public AudioSource cow;
+	public AudioSource sheep;
+	public AudioSource pig;
 
 	public Sprite newSprite;
 	public Sprite armHotbarSprite;
@@ -67,33 +74,8 @@ public class Player : MonoBehaviour
 		BreakBlocks ();
 		Attack ();
 		ChangSprite ();
+		AddToGameManager ();
 		LockCursor ();
-
-		//Player Idol
-		//Note: Code Works Just Messy
-
-		//if (Mathf.Abs(Input.GetAxis("Vertical")) <= 0.1)
-		//{
-		//
-		//	if(timeSpentIdol1 >= 0)
-		//	{
-		//		timeSpentIdol1 = timeSpentIdol1 - 1 * Time.deltaTime;
-		//		if(timeSpentIdol1 <= 0)
-		//		{
-		//			GetComponent<AudioSource>().Play();
-		//		}
-		//	}
-		//
-		//	if(timeSpentIdol1 <=0)
-		//	{
-		//		timeSpentIdol2 = timeSpentIdol2 - 1 * Time.deltaTime;
-		//		if(timeSpentIdol2 <= 0)
-		//		{
-		//			GetComponent<AudioSource>().Play ();
-		//		}
-		//	}
-		//}
-		
 	}
 	public void kraftActivity ()
 	{
@@ -150,10 +132,22 @@ public class Player : MonoBehaviour
 			{
 				if (blockType != null)
 				{
-					if (hitInfo.collider.gameObject.tag == "Block")
+					if (hitInfo.collider.gameObject.layer == 10)
 					{
 						Instantiate (blockType, hitInfo.collider.transform.position + hitInfo.normal , Quaternion.identity);
 						placeBlock.Play ();
+						if (blockType.tag == "Stone Block")
+						{
+							gameManager.GetComponent<GameManager>().stone -= 1;
+						}
+						if (blockType.tag == "Dirt Block")
+						{
+							gameManager.GetComponent<GameManager>().dirt -= 1;
+						}
+						if (blockType.tag == "Wood Block")
+						{
+							gameManager.GetComponent<GameManager>().wood -= 1;
+						}
 					}
 				}
 			}
@@ -188,7 +182,7 @@ public class Player : MonoBehaviour
 			
 			if (Physics.Raycast (rayOrigin, out hitInfo, distance))
 			{
-				if (hitInfo.collider.gameObject.tag == "Block")
+				if (hitInfo.collider.gameObject.layer == 10)
 				{
 					hitInfo.collider.gameObject.GetComponent<Block>().breakTimer = 
 					hitInfo.collider.gameObject.GetComponent<Block>().breakTimerReset;
@@ -209,12 +203,44 @@ public class Player : MonoBehaviour
 			if (Physics.Raycast (rayOrigin, out hitInfo, 4.0f)) 
 			{
 
-				if (hitInfo.collider.gameObject.tag == "Mob")
+				if (hitInfo.collider.gameObject.layer == 11)
 				{
 					punch.Play ();
 					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.forward * knockBack);
 					hitInfo.collider.gameObject.GetComponent<Rigidbody>().AddForce (transform.up * knockBack);
 					hitInfo.collider.gameObject.GetComponent<DeathCode>().health -= attack;
+
+					//Adio on hit
+					if (hitInfo.collider.gameObject.tag == "Zombie")
+					{
+						punch.Play ();
+						zombie.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Skeleton")
+					{
+						punch.Play ();
+						skeleton.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Creeper")
+					{
+						punch.Play ();
+						creeper.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Cow")
+					{
+						punch.Play ();
+						cow.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Sheep")
+					{
+						punch.Play ();
+						sheep.Play ();
+					}
+					if (hitInfo.collider.gameObject.tag == "Pig")
+					{
+						punch.Play ();
+						pig.Play ();
+					}
 				}
 			}
 		}
@@ -229,6 +255,28 @@ public class Player : MonoBehaviour
 	{
 		armHotbar.GetComponent<SpriteRenderer>().sprite = armHotbarSprite;
 		armPunchHotbar.GetComponent<SpriteRenderer>().sprite = armPunchSprite;
+	}
+
+	void AddToGameManager ()
+	{
+		if (newSprite != null) 
+		{
+			if (newSprite.name == "Stone") 
+			{
+				newSprite = null;
+				gameManager.GetComponent<GameManager> ().stone += 1;
+			}
+			else if (newSprite.name == "Dirt") 
+			{
+				newSprite = null;
+				gameManager.GetComponent<GameManager> ().dirt += 1;
+			}
+			else if (newSprite.name == "Wood") 
+			{
+				newSprite = null;
+				gameManager.GetComponent<GameManager> ().wood += 1;
+			}
+		}
 	}
 
 	void LockCursor () 
@@ -255,53 +303,12 @@ public class Player : MonoBehaviour
 	
 	void OnTriggerEnter (Collider other)
 	{
-		if (other.gameObject.tag == "Mob Drop") 
+		if (other.gameObject.layer == 9) 
 		{
 			newBlockType = other.gameObject.GetComponent<MobDrop>().blockType;
 			newSprite = other.gameObject.GetComponent<MobDrop>().spriteStorage;
 			hotbar.GetComponent<Hotbar>().UpdateItems ();
 			Destroy (other.gameObject,0.0f);
 		}
-	}
-
-//For when the hotbar is ready
-//	void HotbarSwitch ()
-//	{
-//		if (Input.GetKeyDown (KeyCode.1)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.2)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.3)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.4)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.5)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.6)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.7)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.8)) 
-//		{
-//			
-//		}
-//		if (Input.GetKeyDown (KeyCode.9)) 
-//		{
-//			
-//		}
-//	}
+	}	
 }

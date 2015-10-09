@@ -8,13 +8,15 @@ public class Creeper : MonoBehaviour
 	public float jumpHeight = 50;
 	public float explosionRadius = 3f;
 	public float explosionTimer = 3f;
-
+	
 	public bool canJump = true;
 	
 	public Collider[] possibleTarget;
 	public Collider[] explosionTarget;
 	public Collider[] objectsAroundCreeper;
-
+	
+	public AudioSource creeper;
+	
 	// Use this for initialization
 	void Start () 
 	{
@@ -50,7 +52,7 @@ public class Creeper : MonoBehaviour
 			transform.Translate (Vector3.forward * speed * Time.deltaTime);
 		}
 	}
-
+	
 	void DetectBlock ()
 	{
 		Ray rayOrigin = new Ray (transform.position,transform.forward);
@@ -68,20 +70,21 @@ public class Creeper : MonoBehaviour
 			canJump = true;
 		}
 	}
-
+	
 	void Explode ()
 	{
 		int layerMask = 1 << 8;
 		explosionTarget =  Physics.OverlapSphere (transform.position, explosionRadius, layerMask);
 		objectsAroundCreeper =  Physics.OverlapSphere (transform.position, explosionRadius);
-
+		
 		if (explosionTarget.Length == 0) 
 		{
 			explosionTimer = 3.0f;
 		}
-
+		
 		if (explosionTarget.Length > 0)
 		{
+			creeper.Play ();
 			explosionTimer -= Time.deltaTime;
 			if (explosionTimer <= 0)
 			{
@@ -92,7 +95,7 @@ public class Creeper : MonoBehaviour
 						_object.gameObject.GetComponent<DeathCode>().health -= 10;
 						Destroy (gameObject,0f);
 					}
-
+					
 					if (_object.gameObject.tag == "Block")
 					{
 						_object.gameObject.GetComponent<Block>().breakTimer = 0.0f;

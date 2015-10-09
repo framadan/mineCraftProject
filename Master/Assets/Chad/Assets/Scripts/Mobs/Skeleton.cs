@@ -6,11 +6,14 @@ public class Skeleton : MonoBehaviour
 	public float aggroRadius = 5.0f;
 	public float speed = 1.0f;
 	public float jumpHeight = 50.0f;
-
+	public float skeletonSoundTimer = 10f;
+	
 	public Collider[] possibleTarget;
-
+	
 	public bool canJump = true;
-
+	
+	public AudioSource skeletonSound = null;
+	
 	// Use this for initialization
 	void Start () 
 	{
@@ -20,10 +23,16 @@ public class Skeleton : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		skeletonSoundTimer -= Time.deltaTime;
+		if (skeletonSoundTimer <= 0) 
+		{
+			skeletonSound.Play ();
+			skeletonSoundTimer = Random.Range (7f,15f);
+		}
 		FindPlayer ();
 		DetectBlock ();
 	}
-
+	
 	void FindPlayer ()
 	{
 		int layerMask = 1 << 8;

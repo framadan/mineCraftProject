@@ -6,17 +6,19 @@ public class Zombie : MonoBehaviour
 	public float aggroRadius = 5f;
 	public float speed = 1.0f;
 	public float jumpHeight = 50;
-
+	public float zombieSoundTimer = 10f;
+	
 	public bool canJump = true;
-
+	
 	public int knockBack = 150;
-
+	
 	public Collider[] possibleTarget;
 	
 	public GameObject[] mobDrop = null;
-
+	
 	public AudioSource hitSound = null;
-
+	public AudioSource zombieSound = null;
+	
 	// Use this for initialization
 	void Start () 
 	{
@@ -26,20 +28,26 @@ public class Zombie : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
+		zombieSoundTimer -= Time.deltaTime;
+		if (zombieSoundTimer <= 0) 
+		{
+			zombieSound.Play ();
+			zombieSoundTimer = Random.Range (7f,15f);
+		}
 		FindPlayer ();
 		DetectBlock ();
 	}
-
+	
 	void FindPlayer ()
 	{
 		int layerMask = 1 << 8;
 		possibleTarget = Physics.OverlapSphere (transform.position, aggroRadius, layerMask);
-
+		
 		if (possibleTarget.Length == 0) 
 		{
 			GetComponent<Mob>().enabled = true;
 		}
-
+		
 		if (possibleTarget.Length > 0) 
 		{
 			Vector3 direction = (possibleTarget[0].transform.position - transform.position).normalized;
@@ -51,7 +59,7 @@ public class Zombie : MonoBehaviour
 			transform.Translate (Vector3.forward * speed * Time.deltaTime);
 		}
 	}
-
+	
 	void DetectBlock ()
 	{
 		Ray rayOrigin = new Ray (transform.position,transform.forward);
@@ -69,7 +77,7 @@ public class Zombie : MonoBehaviour
 			canJump = true;
 		}
 	}
-
+	
 	void OnCollisionEnter (Collision other)
 	{
 		if (other.gameObject.tag == "Player") 
