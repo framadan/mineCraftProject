@@ -24,11 +24,12 @@ public class Player : MonoBehaviour
 	public GameObject block;
 	public GameObject normalArm;
 	public GameObject armPunch;
-	public GameObject hotbar;
+	public GameObject hotbarReference;
 	public GameObject armHotbar;
 	public GameObject armPunchHotbar;
 	public GameObject blockType;
 	public GameObject newBlockType;
+	public GameObject gameManager;
 	
 	public Collider[] mobs;
 
@@ -55,6 +56,7 @@ public class Player : MonoBehaviour
 		BreakBlocks ();
 		Attack ();
 		ChangSprite ();
+		AddToGameManager ();
 		LockCursor ();
 
 		//Player Idol
@@ -134,10 +136,22 @@ public class Player : MonoBehaviour
 			{
 				if (blockType != null)
 				{
-					if (hitInfo.collider.gameObject.tag == "Block")
+					if (hitInfo.collider.gameObject.layer == 10)
 					{
 						Instantiate (blockType, hitInfo.collider.transform.position + hitInfo.normal , Quaternion.identity);
 						placeBlock.Play ();
+						if (blockType.tag == "Stone Block")
+						{
+							gameManager.GetComponent<GameManager>().stone -= 1;
+						}
+						if (blockType.tag == "Dirt Block")
+						{
+							gameManager.GetComponent<GameManager>().dirt -= 1;
+						}
+						if (blockType.tag == "Wood Block")
+						{
+							gameManager.GetComponent<GameManager>().wood -= 1;
+						}
 					}
 				}
 			}
@@ -158,7 +172,7 @@ public class Player : MonoBehaviour
 
 			if (Physics.Raycast (rayOrigin, out hitInfo, distance))
 			{
-				if (hitInfo.collider.gameObject.tag == "Block")
+				if (hitInfo.collider.gameObject.layer == 10)
 				{
 					hitInfo.collider.gameObject.GetComponent<Block>().breakTimer -= Time.deltaTime;
 				}
@@ -172,7 +186,7 @@ public class Player : MonoBehaviour
 			
 			if (Physics.Raycast (rayOrigin, out hitInfo, distance))
 			{
-				if (hitInfo.collider.gameObject.tag == "Block")
+				if (hitInfo.collider.gameObject.layer == 10)
 				{
 					hitInfo.collider.gameObject.GetComponent<Block>().breakTimer = 
 					hitInfo.collider.gameObject.GetComponent<Block>().breakTimerReset;
@@ -215,6 +229,28 @@ public class Player : MonoBehaviour
 		armPunchHotbar.GetComponent<SpriteRenderer>().sprite = armPunchSprite;
 	}
 
+	void AddToGameManager ()
+	{
+		if (newSprite != null) 
+		{
+			if (newSprite.name == "Stone") 
+			{
+				newSprite = null;
+				gameManager.GetComponent<GameManager> ().stone += 1;
+			}
+			else if (newSprite.name == "Dirt") 
+			{
+				newSprite = null;
+				gameManager.GetComponent<GameManager> ().dirt += 1;
+			}
+			else if (newSprite.name == "Wood") 
+			{
+				newSprite = null;
+				gameManager.GetComponent<GameManager> ().wood += 1;
+			}
+		}
+	}
+
 	void LockCursor () 
 	{
 		if (cursorLocked == true && Input.GetKeyDown (KeyCode.Escape)) 
@@ -239,11 +275,11 @@ public class Player : MonoBehaviour
 	
 	void OnTriggerEnter (Collider other)
 	{
-		if (other.gameObject.tag == "Mob Drop") 
+		if (other.gameObject.layer == 9) 
 		{
 			newBlockType = other.gameObject.GetComponent<MobDrop>().blockType;
 			newSprite = other.gameObject.GetComponent<MobDrop>().spriteStorage;
-			hotbar.GetComponent<Hotbar>().UpdateItems ();
+			hotbarReference.GetComponent<Hotbar>().UpdateItems ();
 			Destroy (other.gameObject,0.0f);
 		}
 	}
